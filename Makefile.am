@@ -60,7 +60,9 @@ i3lock_SOURCES = \
 	blur.h \
 	jpg.c \
 	jpg.h \
-	fonts.h
+	fonts.h \
+	battery.c \
+	battery.h
 
 
 EXTRA_DIST = \
