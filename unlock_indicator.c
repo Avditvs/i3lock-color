@@ -886,7 +886,10 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
     }
 
     if(show_battery){
-        gcvt(get_battery_level(), N_DIGITS, draw_data.battery_text.str);
+        char level[N_DIGITS+1];
+        gcvt(get_battery_level(), N_DIGITS+1, level);
+        strcpy(draw_data.battery_text.str, "Battery : ");
+        strcat(draw_data.battery_text.str, level);
         draw_data.battery_text.show = true;
         draw_data.battery_text.size = battery_size;
         draw_data.battery_text.color = battery16;
@@ -1082,6 +1085,8 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
     te_free(te_bar_expr);
     te_free(te_greeter_x_expr);
     te_free(te_greeter_y_expr);
+    te_free(te_battery_x_expr);
+    te_free(te_battery_y_expr);
 
     cairo_set_source_surface(xcb_ctx, output, 0, 0);
     cairo_rectangle(xcb_ctx, 0, 0, resolution[0], resolution[1]);
