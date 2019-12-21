@@ -89,6 +89,8 @@ char keyhlcolor[9] = "33db00ff";
 char bshlcolor[9] = "db3300ff";
 char separatorcolor[9] = "000000ff";
 char greetercolor[9] = "000000ff";
+char batterycolor[9] = "7d3300ff";
+
 
 /* int defining which display the lock indicator should be shown on. If -1, then show on all displays.*/
 int screen_number = 0;
@@ -100,6 +102,7 @@ bool slideshow_enabled = false;
 bool always_show_clock = false;
 bool show_indicator = false;
 float refresh_rate = 1.0;
+bool show_battery = true;
 
 /* there's some issues with compositing - upstream removed support for this, but we'll allow people to supply an arg to enable it */
 bool composite = false;
@@ -119,6 +122,7 @@ int date_align = 0;
 int layout_align = 0;
 int modif_align = 0;
 int greeter_align = 0;
+int battery_align = 0;
 
 char time_format[32] = "%H:%M:%S\0";
 char date_format[32] = "%A, %m %Y\0";
@@ -129,14 +133,16 @@ char layout_font[32] = "sans-serif\0";
 char time_font[32] = "sans-serif\0";
 char date_font[32] = "sans-serif\0";
 char greeter_font[32] = "sans-serif\0";
+char battery_font[32] = "sans-serif\0";
 
-char* fonts[6] = {
+char* fonts[7] = {
     verif_font,
     wrong_font,
     layout_font,
     time_font,
     date_font,
-    greeter_font
+    greeter_font,
+    battery_font,
 };
 
 char ind_x_expr[32] = "x + (w / 2)\0";
@@ -167,6 +173,7 @@ double layout_size = 14.0;
 double circle_radius = 90.0;
 double ring_width = 7.0;
 double greeter_size = 32.0;
+double battery_size = 32.0;
 
 char* verif_text = "verifying…";
 char* wrong_text = "wrong!";

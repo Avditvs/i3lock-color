@@ -13,6 +13,7 @@
 #define TIME_FONT   3
 #define DATE_FONT   4
 #define GREETER_FONT   5
+#define BATTERY_FONT 6
 
 typedef struct text {
     bool show;

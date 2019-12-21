@@ -6,6 +6,8 @@
 
 #include "fonts.h"
 
+#define N_DIGITS 3
+
 typedef enum {
     STATE_STARTED = 0,           /* default state */
     STATE_KEY_PRESSED = 1,       /* key was pressed, show unlock indicator */
@@ -31,9 +33,10 @@ typedef struct {
     text_t time_text;
     text_t date_text;
     text_t greeter_text;
+    text_t battery_text;
 
     double indicator_x, indicator_y;
-
+    double battery_x, battery_y;
     double bar_x, bar_y;
     double bar_offset;
 } DrawData;

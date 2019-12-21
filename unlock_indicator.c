@@ -24,6 +24,7 @@
 #include "dpi.h"
 #include "tinyexpr.h"
 #include "fonts.h"
+#include "battery.h"
 
 /* clock stuff */
 #include <time.h>
@@ -89,6 +90,7 @@ extern char keyhlcolor[9];
 extern char bshlcolor[9];
 extern char separatorcolor[9];
 extern char greetercolor[9];
+extern char batterycolor[9];
 extern int internal_line_source;
 
 extern int screen_number;
@@ -97,6 +99,7 @@ extern float refresh_rate;
 extern bool show_clock;
 extern bool always_show_clock;
 extern bool show_indicator;
+extern bool show_battery;
 extern int verif_align;
 extern int wrong_align;
 extern int time_align;
@@ -104,6 +107,7 @@ extern int date_align;
 extern int layout_align;
 extern int modif_align;
 extern int greeter_align;
+extern int battery_align;
 extern char time_format[32];
 extern char date_format[32];
 extern char *fonts[6];
@@ -133,6 +137,7 @@ extern double wrong_size;
 extern double modifier_size;
 extern double layout_size;
 extern double greeter_size;
+extern double battery_size;
 
 extern char *verif_text;
 extern char *wrong_text;
@@ -189,6 +194,7 @@ rgba_t bshl16;
 rgba_t sep16;
 rgba_t bar16;
 rgba_t greeter16;
+rgba_t battery16;
 // just rgb
 rgb_t rgb16;
 
@@ -213,7 +219,8 @@ extern char bar_expr[32];
 extern bool bar_bidirectional;
 extern bool bar_reversed;
 
-static cairo_font_face_t *font_faces[6] = {
+static cairo_font_face_t *font_faces[7] = {
+    NULL,
     NULL,
     NULL,
     NULL,
@@ -611,6 +618,7 @@ void init_colors_once(void) {
     colorgen(&tmp, separatorcolor, &sep16);
     colorgen(&tmp, bar_base_color, &bar16);
     colorgen(&tmp, greetercolor, &greeter16);
+    colorgen(&tmp, batterycolor, &battery16);
     colorgen_rgb(&tmp_rgb, color, &rgb16);
 }
 
@@ -668,6 +676,8 @@ static void draw_elements(cairo_t *const ctx, DrawData const *const draw_data) {
     draw_text(ctx, draw_data->time_text);
     draw_text(ctx, draw_data->date_text);
     draw_text(ctx, draw_data->greeter_text);
+    draw_text(ctx, draw_data->battery_text);
+
 }
 
 /*
@@ -873,6 +883,15 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
         }
     }
 
+    if(show_battery){
+        gcvt(get_battery_level(), N_DIGITS, draw_data.battery_text.str);
+        draw_data.battery_text.show = true;
+        draw_data.battery_text.size = battery_size;
+        draw_data.battery_text.color = battery16;
+        draw_data.battery_text.font = get_font_face(BATTERY_FONT);
+        draw_data.battery_text.align = battery_align;
+    }
+
     // initialize positioning vars
     double screen_x = 0, screen_y = 0,
            width = 0, height = 0;
@@ -933,6 +952,8 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
             draw_data.date_text.y = 0;
             draw_data.greeter_text.x = 0;
             draw_data.greeter_text.y = 0;
+            draw_data.battery_text.x = 100;
+            draw_data.battery_text.y = 100;
 
             width = xr_resolutions[current_screen].width / scaling_factor;
             height = xr_resolutions[current_screen].height / scaling_factor;
