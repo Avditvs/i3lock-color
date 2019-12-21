@@ -1,5 +1,17 @@
 i3lock - improved screen locker
-===============================
+=====================================================================
+## This project is a fork from PandorasFox/i3lock-color
+
+
+Added battery level:
+extra parameters :
+- --battery-indicator _#displays the battery indicator_
+- --batterypos=x:y _#changes the position of the indicator_
+- --batterysize=x _#changes the indicator size_
+- --batterycolor=#xxxxxxxx _#changes the color of the battery indicator_
+- --battery-font=font _#to change the font_
+
+==========================================================================
 
 # This project is not maintained
 
