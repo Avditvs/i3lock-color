@@ -886,8 +886,8 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
     }
 
     if(show_battery){
-        char level[N_DIGITS+1];
-        gcvt(get_battery_level(), N_DIGITS+1, level);
+        char level[N_DIGITS+2];
+        gcvt(get_battery_level(), N_DIGITS, level);
         strcpy(draw_data.battery_text.str, "Battery : ");
         strcat(draw_data.battery_text.str, level);
         draw_data.battery_text.show = true;
