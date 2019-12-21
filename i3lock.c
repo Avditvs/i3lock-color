@@ -1786,7 +1786,7 @@ int main(int argc, char *argv[]) {
                 break;
             case 526:
                 if (strlen(optarg) > 31) {
-                    errx(1, "batery font string can be at most 31 characters\n");
+                    errx(1, "battery font string can be at most 31 characters\n");
                 }
                 strcpy(fonts[BATTERY_FONT],optarg);
                 break;
