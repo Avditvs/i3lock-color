@@ -89,7 +89,7 @@ char keyhlcolor[9] = "33db00ff";
 char bshlcolor[9] = "db3300ff";
 char separatorcolor[9] = "000000ff";
 char greetercolor[9] = "000000ff";
-char batterycolor[9] = "7d3300ff";
+char batterycolor[9] = "000000ff";
 
 
 /* int defining which display the lock indicator should be shown on. If -1, then show on all displays.*/
@@ -102,7 +102,7 @@ bool slideshow_enabled = false;
 bool always_show_clock = false;
 bool show_indicator = false;
 float refresh_rate = 1.0;
-bool show_battery = true;
+bool show_battery = false;
 
 /* there's some issues with compositing - upstream removed support for this, but we'll allow people to supply an arg to enable it */
 bool composite = false;
@@ -163,6 +163,8 @@ char wrong_x_expr[32] = "ix\0";
 char wrong_y_expr[32] = "iy\0";
 char greeter_x_expr[32] = "ix\0";
 char greeter_y_expr[32] = "ix\0";
+char battery_x_expr[32] = "ix\0";
+char battery_y_expr[32] = "ix\0";
 
 double time_size = 32.0;
 double date_size = 14.0;
@@ -1402,6 +1404,7 @@ int main(int argc, char *argv[]) {
         {"bshlcolor", required_argument, NULL, 313},
         {"separatorcolor", required_argument, NULL, 314},
         {"greetercolor", required_argument, NULL, 315},
+        {"batterycolor", required_argument, NULL, 316},
 
         {"line-uses-ring", no_argument, NULL, 'r'},
         {"line-uses-inside", no_argument, NULL, 's'},
@@ -1413,6 +1416,7 @@ int main(int argc, char *argv[]) {
         {"indicator", no_argument, NULL, 401},
         {"radius", required_argument, NULL, 402},
         {"ring-width", required_argument, NULL, 403},
+        {"battery-indicator", no_argument, NULL, 404},
 
         // alignment
         {"time-align", required_argument, NULL, 500},
@@ -1441,6 +1445,7 @@ int main(int argc, char *argv[]) {
         {"wrong-font", required_argument, NULL, 523},
         {"layout-font", required_argument, NULL, 524},
         {"greeter-font", required_argument, NULL, 525},
+        {"battery-font", required_argument, NULL, 536},
 
         // text size
         {"timesize", required_argument, NULL, 530},
@@ -1450,6 +1455,7 @@ int main(int argc, char *argv[]) {
         {"layoutsize", required_argument, NULL, 534},
         {"modsize", required_argument, NULL, 535},
         {"greetersize", required_argument, NULL, 536},
+        {"batterysize", required_argument, NULL, 537},
 
         // text/indicator positioning
         {"timepos", required_argument, NULL, 540},
@@ -1461,6 +1467,7 @@ int main(int argc, char *argv[]) {
         {"modifpos", required_argument, NULL, 546},
         {"indpos", required_argument, NULL, 547},
         {"greeterpos", required_argument, NULL, 548},
+        {"batterypos", required_argument, NULL, 549},
 
 		// pass keys
         {"pass-media-keys", no_argument, NULL, 601},
@@ -1629,6 +1636,9 @@ int main(int argc, char *argv[]) {
             case 315:
                 parse_color(greetercolor);
                 break;
+            case 316:
+                parse_color(batterycolor);
+                break;
 
 			// General indicator opts
             case 400:
@@ -1655,6 +1665,9 @@ int main(int argc, char *argv[]) {
                     fprintf(stderr, "ring-width must be a positive float; ignoring...\n");
                     ring_width = 7.0;
                 }
+                break;
+            case 404:
+                show_battery = true;
                 break;
 
 			// Alignment stuff
@@ -1771,6 +1784,12 @@ int main(int argc, char *argv[]) {
                 }
                 strcpy(fonts[GREETER_FONT],optarg);
                 break;
+            case 526:
+                if (strlen(optarg) > 31) {
+                    errx(1, "batery font string can be at most 31 characters\n");
+                }
+                strcpy(fonts[BATTERY_FONT],optarg);
+                break;
 
 			// Text size
             case 530:
@@ -1828,6 +1847,15 @@ int main(int argc, char *argv[]) {
                 if (greeter_size < 1) {
                     fprintf(stderr, "greetersize must be a positive integer; ignoring...\n");
                     greeter_size = 14.0;
+                }
+                break;
+            case 537:
+                arg = optarg;
+                if (sscanf(arg, "%lf", &battery_size) != 1)
+                    errx(1, "batterysize must be a number\n");
+                if (battery_size < 1) {
+                    fprintf(stderr, "batterysizesize must be a positive integer; ignoring...\n");
+                    battery_size = 14.0;
                 }
                 break;
 
@@ -1922,6 +1950,15 @@ int main(int argc, char *argv[]) {
                     errx(1, "indpos must be of the form x:y\n");
                 }
                 break;
+            case 549:
+                if (strlen(optarg) > 31) {
+                    errx(1, "battery position must be at most 31 characters\n");
+                }
+                arg = optarg;
+                 if (sscanf(arg, "%30[^:]:%30[^:]", battery_x_expr, battery_y_expr) != 2) {
+                    errx(1, "batterypos must be of the form x:y\n");
+                }
+            break;
 
 			// Pass keys
 			case 601:

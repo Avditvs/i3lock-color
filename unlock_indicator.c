@@ -129,6 +129,8 @@ extern char modif_x_expr[32];
 extern char modif_y_expr[32];
 extern char greeter_x_expr[32];
 extern char greeter_y_expr[32];
+extern char battery_x_expr[32];
+extern char battery_y_expr[32];
 
 extern double time_size;
 extern double date_size;
@@ -935,6 +937,8 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
 
     te_expr *te_greeter_x_expr = compile_expression("--greeterpos", greeter_x_expr, vars, vars_size);
     te_expr *te_greeter_y_expr = compile_expression("--greeterpos", greeter_y_expr, vars, vars_size);
+    te_expr *te_battery_x_expr = compile_expression("--batterypos", battery_x_expr, vars, vars_size);
+    te_expr *te_battery_y_expr = compile_expression("--batterypos", battery_y_expr, vars, vars_size);
 
     if (xr_screens > 0) {
         if (screen_number < 0 || screen_number > xr_screens) {
@@ -977,6 +981,8 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
             draw_data.keylayout_text.y = te_eval(te_layout_y_expr);
             draw_data.greeter_text.x = te_eval(te_greeter_x_expr);
             draw_data.greeter_text.y = te_eval(te_greeter_y_expr);
+            draw_data.battery_text.x = te_eval(te_battery_x_expr);
+            draw_data.battery_text.y = te_eval(te_battery_y_expr);
 
             switch (auth_state) {
                 case STATE_AUTH_VERIFY:
